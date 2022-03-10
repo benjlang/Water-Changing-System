@@ -13,9 +13,6 @@ struct tank {
     int dirty_pump;
 };
 
-struct tank small_tank;
-struct tank large_tank;
-
 //set at default levels for first use
 int empty_float_level = 500; //0
 

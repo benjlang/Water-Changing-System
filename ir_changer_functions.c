@@ -13,8 +13,9 @@ extern const int selectPins[3]; // S0, S1, S2
 extern const int aOutput; // Connect common (Z) to 5 (PIM-capable)
 
 //Water sensors
-extern struct tank small;
-extern struct tank large;
+struct tank small;
+struct tank large;
+
 extern const int dirty_float_leveler;
 
 void setup() {
