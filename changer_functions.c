@@ -19,12 +19,15 @@ struct tank large_tank;
 //set at default levels for first use
 int empty_float_level = 500; //0
 
+
 void set_float_level(struct tank* t) {
     t->empty_float_level = analogRead(dirty_float_leveler);
     EEPROM.put(t->offset, t->empty_float_level);
     EEPROM.commit();
 }
 
+
+/** Sets intital values of each tank structure */
 void set_tanks(struct tank* small, struct tank* large) {
     large->clean_pump = 2;
     large->dirty_pump = 4;
@@ -59,7 +62,7 @@ void turn_off_item(int item_id) {
   digitalWrite(aOutput, HIGH);
 }
 
-/* pumps clean water into tank */
+
 void pump_clean_in_tank(struct tank* t) {
     selectMuxPin(t->clean_pump);
     while(digitalRead(t->proximity_sensor) == LOW) {
@@ -69,6 +72,7 @@ void pump_clean_in_tank(struct tank* t) {
     digitalWrite(aOutput, HIGH);
 }
 
+
 void pump_dirty_out_tank(struct tank* t) {
     selectMuxPin(t->dirty_pump);
     while (analogRead(dirty_float_leveler) > t->empty_float_level) {
@@ -77,6 +81,7 @@ void pump_dirty_out_tank(struct tank* t) {
     }
     digitalWrite(aOutput, HIGH);
 }
+
 
 void perform_whole_change(struct tank* t) {
     if (check_dirty_bucket) {
@@ -90,6 +95,7 @@ void perform_whole_change(struct tank* t) {
     return;
 }
 
+
 /** checks if dirty bucket is full or not */
 bool check_dirty_bucket() {
     Serial.println(analogRead(dirty_float_leveler));
@@ -101,6 +107,7 @@ bool check_dirty_bucket() {
     }
 }
 
+
 /* Turns on the dirty emptying pump to empty dirty water */
 void empty_dirty_bucket() {
     selectMuxPin(empty_dirty_water_pump);
@@ -110,6 +117,7 @@ void empty_dirty_bucket() {
     }
     digitalWrite(aOutput, HIGH);
 }
+
 
 /* The selectMuxPin function sets the S0, S1, and S2 pins to select the give pin
  *  
@@ -126,6 +134,7 @@ void selectMuxPin(byte pin)
       digitalWrite(selectPins[i], LOW);
   }
 }
+
 
 /* Sets all relays off first */
 void set_relays() {
