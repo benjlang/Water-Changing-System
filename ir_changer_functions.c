@@ -11,12 +11,20 @@ decode_results results;
 
 extern const int selectPins[3]; // S0, S1, S2
 extern const int aOutput; // Connect common (Z) to 5 (PIM-capable)
+extern const int dirty_float_leveler;
+
+struct tank {
+    int proximity_sensor;
+    int empty_float_level;
+    int offset;
+    int clean_pump;
+    int dirty_pump;
+};
 
 //Water sensors
 struct tank small;
 struct tank large;
 
-extern const int dirty_float_leveler;
 
 void setup() {
     EEPROM.begin(12);
@@ -64,22 +72,42 @@ void loop() {
     else if (results.value == 0x807fc03f) {
       Serial.println("1 Pressed");
       
-      water_change_small_tank();
+      perform_whole_change(&small);
     }
     else if (results.value == 0x807f827d) {
       Serial.println("2 Pressed");
       
-      water_change_large_tank();
+      perform_whole_change(&large);
     }
     else if (results.value == 0x807f609f) {
       Serial.println("3 Pressed");
       
-      turn_on_item(3);
+      turn_on_item(small.dirty_pump);
     }
     else if (results.value == 0x807fa25d) {
       Serial.println("4 Pressed");
       
-      turn_on_item(4);
+      turn_on_item(large.dirty_pump);
+    }
+    else if (results.value == 0x807f50af) {
+      Serial.println("TODO");
+      
+      turn_on_item(large.clean_pump);
+    }
+    else if (results.value == 0x807f50af) {
+      Serial.println("TODO");
+      
+      turn_on_item(small.clean_pump);
+    }
+    else if (results.value == 0x807f50af) {
+      Serial.println("TODO");
+      
+      set_float_level(&large);
+    }
+    else if (results.value == 0x807f50af) {
+      Serial.println("TODO");
+      
+      set_float_level(&small);
     }
     else if (results.value == 0x807f50af) {
       Serial.println("0 Pressed");

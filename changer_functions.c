@@ -4,16 +4,7 @@ const int aOutput = 2;                      //D4
 
 const int dirty_float_leveler = A0;     //A0
 const int empty_dirty_water_pump = 0;
-
-struct tank {
-    int proximity_sensor;
-    int empty_float_level;
-    int offset;
-    int clean_pump;
-    int dirty_pump;
-};
-
-//set at default levels for first use
+//set at default level for first use
 int empty_float_level = 500; //0
 
 
