@@ -19,8 +19,7 @@ extern const int dirty_float_leveler;
 
 void setup() {
     EEPROM.begin(12);
-    load_float_levels();
-    
+
     set_tanks(&small, &large);
 
     pinMode(large.proximity_sensor, INPUT);
@@ -53,6 +52,8 @@ void loop() {
   
     Serial.println(hex);
 
+    //TODO: SET BUTTONS ONCE HAVE REMOTE
+    
     if (results.value == 0x807f40bf) {
       Serial.println("OK Pressed");
 
