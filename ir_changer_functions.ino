@@ -27,7 +27,9 @@ struct tank large;
 
 
 void setup() {
-    EEPROM.begin(12);
+    Serial.begin(9600);
+  
+    EEPROM.begin(8);
 
     set_tanks(&small, &large);
 
@@ -47,8 +49,6 @@ void setup() {
     set_relays();
 
     irrecv.enableIRIn();  // Start the receiver
-    
-    Serial.begin(9600);
 }
 
 void loop() {
@@ -60,57 +60,55 @@ void loop() {
     String hex = String(long1, HEX) + String(long2, HEX); // six octets
   
     Serial.println(hex);
-
-    //TODO: SET BUTTONS ONCE HAVE REMOTE
     
     if (results.value == 0x807f40bf) {
-      Serial.println("OK Pressed");
+      Serial.println("9 am Pressed");
 
       //turns all relays off
       set_relays();
     }
     else if (results.value == 0x807fc03f) {
-      Serial.println("1 Pressed");
+      Serial.println("12 pm Pressed");
       
       perform_whole_change(&small);
     }
     else if (results.value == 0x807f827d) {
-      Serial.println("2 Pressed");
+      Serial.println("3 pm Pressed");
       
       perform_whole_change(&large);
     }
     else if (results.value == 0x807f609f) {
-      Serial.println("3 Pressed");
+      Serial.println("6 am Pressed");
       
       turn_on_item(small.dirty_pump);
     }
     else if (results.value == 0x807fa25d) {
-      Serial.println("4 Pressed");
+      Serial.println("6 pm Pressed");
       
       turn_on_item(large.dirty_pump);
     }
     else if (results.value == 0x807f50af) {
-      Serial.println("TODO");
+      Serial.println("3 am Pressed");
       
       turn_on_item(large.clean_pump);
     }
-    else if (results.value == 0x807f50af) {
-      Serial.println("TODO");
+    else if (results.value == 0x807fd02f) {
+      Serial.println("12 am Pressed");
       
       turn_on_item(small.clean_pump);
     }
-    else if (results.value == 0x807f50af) {
-      Serial.println("TODO");
+    else if (results.value == 0x807f926d) {
+      Serial.println("9 pm Pressed");
       
       set_float_level(&large);
     }
-    else if (results.value == 0x807f50af) {
-      Serial.println("TODO");
+    else if (results.value == 0x807f8a75) {
+      Serial.println("G Pressed");
       
       set_float_level(&small);
     }
-    else if (results.value == 0x807f50af) {
-      Serial.println("0 Pressed");
+    else if (results.value == 0x807fc837) {
+      Serial.println("R Pressed");
       
       empty_dirty_bucket();
     }

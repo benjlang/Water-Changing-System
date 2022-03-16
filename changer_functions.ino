@@ -4,8 +4,7 @@ const int aOutput = 2;                      //D4
 
 const int dirty_float_leveler = A0;     //A0
 const int empty_dirty_water_pump = 0;
-//set at default level for first use
-int empty_float_level = 500; //0
+const int empty_float_level = 500; //0
 
 
 void set_float_level(struct tank* t) {
@@ -19,17 +18,15 @@ void set_float_level(struct tank* t) {
 void set_tanks(struct tank* small, struct tank* large) {
     large->clean_pump = 2;
     large->dirty_pump = 4;
-    large->offset = 4;
+    large->offset = 0;
     EEPROM.get(large->offset, large->empty_float_level);
     large->proximity_sensor = 5; //D1
 
     small->clean_pump = 1;
     small->dirty_pump = 3;
-    small->offset = 8;
+    small->offset = 4;
     EEPROM.get(small->offset, small->empty_float_level);
     small->proximity_sensor = 4; //D2
-
-    EEPROM.get(0, empty_float_level);
 }
 
 /* Turns on a single relay block for a specified value
