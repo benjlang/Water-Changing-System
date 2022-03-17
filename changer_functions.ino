@@ -10,6 +10,7 @@ const int empty_float_level = 500; //0
 void set_float_level(struct tank* t) {
     t->empty_float_level = analogRead(dirty_float_leveler);
     EEPROM.put(t->offset, t->empty_float_level);
+    Serial.println(dirty_float_leveler);
     EEPROM.commit();
 }
 
@@ -22,8 +23,8 @@ void set_tanks(struct tank* small, struct tank* large) {
     EEPROM.get(large->offset, large->empty_float_level);
     large->proximity_sensor = 5; //D1
 
-    small->clean_pump = 1;
-    small->dirty_pump = 3;
+    small->clean_pump = 3;
+    small->dirty_pump = 1;
     small->offset = 4;
     EEPROM.get(small->offset, small->empty_float_level);
     small->proximity_sensor = 4; //D2
@@ -34,6 +35,7 @@ void set_tanks(struct tank* small, struct tank* large) {
  * PARAM: item_id, value acossiated to relay block
 */
 void turn_on_item(int item_id) {
+  Serial.println(item_id);
   selectMuxPin(item_id);
   digitalWrite(aOutput, LOW);
 }
@@ -49,30 +51,32 @@ void turn_off_item(int item_id) {
 
 
 void pump_clean_in_tank(struct tank* t) {
-    selectMuxPin(t->clean_pump);
+    turn_on_item(t->clean_pump);
+    
     while(digitalRead(t->proximity_sensor) == LOW) {
-      digitalWrite(aOutput, LOW);
       delay(500);
     }
-    digitalWrite(aOutput, HIGH);
+    
+    turn_off_item(t->clean_pump);
 }
 
 
 void pump_dirty_out_tank(struct tank* t) {
-    selectMuxPin(t->dirty_pump);
+    turn_on_item(t->dirty_pump);
+    
     while (analogRead(dirty_float_leveler) > t->empty_float_level) {
-      digitalWrite(aOutput, LOW);
       delay(500);
     }
-    digitalWrite(aOutput, HIGH);
+    
+    turn_off_item(t->dirty_pump);
 }
 
 
 void perform_whole_change(struct tank* t) {
-    if (check_dirty_bucket) {
+    if (check_dirty_bucket()) {
         return;
     }
-
+    
     pump_dirty_out_tank(t);
     pump_clean_in_tank(t);
     empty_dirty_bucket();
@@ -108,7 +112,7 @@ void empty_dirty_bucket() {
  *  
  * PARAM: pin to select
  */
-void selectMuxPin(byte pin)
+void selectMuxPin(int pin)
 {
   if (pin > 7) return; // Exit if pin is out of scope
   for (int i=0; i<3; i++)
